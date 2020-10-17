@@ -1,5 +1,6 @@
 package com.sslabtzuchi;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.robotemi.sdk.BatteryData;
@@ -8,15 +9,19 @@ import com.robotemi.sdk.TtsRequest;
 import com.robotemi.sdk.listeners.OnBatteryStatusChangedListener;
 import com.robotemi.sdk.listeners.OnGoToLocationStatusChangedListener;
 import com.robotemi.sdk.listeners.OnLocationsUpdatedListener;
+import com.robotemi.sdk.navigation.listener.OnCurrentPositionChangedListener;
 import com.robotemi.sdk.navigation.listener.OnDistanceToLocationChangedListener;
+import com.robotemi.sdk.navigation.model.Position;
 import com.robotemi.sdk.navigation.model.SafetyLevel;
 import com.robotemi.*;
 import com.robotemi.sdk.permission.OnRequestPermissionResultListener;
 import com.robotemi.sdk.permission.Permission;
 
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -28,13 +33,28 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity implements OnRequestPermissionResultListener, OnLocationsUpdatedListener, OnBatteryStatusChangedListener, OnGoToLocationStatusChangedListener, OnDistanceToLocationChangedListener {
+public class MainActivity extends AppCompatActivity implements OnRequestPermissionResultListener ,OnCurrentPositionChangedListener, OnLocationsUpdatedListener, OnBatteryStatusChangedListener, OnGoToLocationStatusChangedListener, OnDistanceToLocationChangedListener {
     private Button B1,B2,B3,B4;
-    TtsRequest goat = TtsRequest.create("前往目的地",true);
+//    TtsRequest goat = TtsRequest.create("前往目的地",false);
     private Robot robot;
+    int speak_count =0;
     private List<String> test1;
+    Handler handler=new Handler();
+    Runnable runnable=new Runnable() {
+        @Override
+        public void run() {
+            // TODO Auto-generated method stub
+            //要做的事情
+            TtsRequest temp = TtsRequest.create("機器人移動中，請小心", false);
+            robot.speak(temp);
+            handler.postDelayed(this, 6000);
+        }
+    };
 
 
     @Override
@@ -51,42 +71,33 @@ public class MainActivity extends AppCompatActivity implements OnRequestPermissi
         Btmp.setAlpha(0.6f);
         Btmp = findViewById(R.id.b3);
         Btmp.setAlpha(0.6f);
+        Btmp = findViewById(R.id.b4);
+        Btmp.setAlpha(0.6f);
         robot = Robot.getInstance();
         robot.addOnLocationsUpdatedListener(this);
+        robot.addOnDistanceToLocationChangedListener(this);
         robot.addOnGoToLocationStatusChangedListener(this);
         robot.addOnBatteryStatusChangedListener(this);
         robot.addOnRequestPermissionResultListener(this);
-        robot.requestToBeKioskApp();
+//        robot.requestToBeKioskApp();
 //        Permission setting = Permission.SETTINGS;
 //        List <Permission> Authority = new ArrayList<>();
 //        Authority.add(setting);
 //        robot.requestPermissions(Authority,1);
 //        Log.d("setting",Integer.toString(robot.checkSelfPermission(Permission.SETTINGS)));
 //        Log.d("kiosk",Boolean.toString(robot.isSelectedKioskApp()));
-        Log.d("safe",robot.getNavigationSafety().getValue());
-        robot.setNavigationSafety(SafetyLevel.MEDIUM);
-        Log.d("safe2",robot.getNavigationSafety().getValue());
         B1 = (Button) findViewById(R.id.b1);
         B1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                TtsRequest temp = TtsRequest.create("中文測試",true);
-//                robot.speak(temp);
-//                test1 = robot.getLocations();
-//                Log.d("test2",test1.toString());
-//                Log.d("test3",test1.get(0).toString());
-//                robot.goTo(test1.get(0).toString());
-//               B1.setText("ttt");
-//                TtsRequest temp = TtsRequest.create("中文測試",true);
-//                robot.speak(temp);
                 robot.goTo("home base");
 
             }
         });
 
-        Toast.makeText(this, robot.getNavigationSafety().getValue(), Toast.LENGTH_LONG).show();
-        Toast.makeText(this, Integer.toString(robot.checkSelfPermission(Permission.SETTINGS)), Toast.LENGTH_LONG).show();
-        Toast.makeText(this, Boolean.toString(robot.isSelectedKioskApp()), Toast.LENGTH_LONG).show();
+//        Toast.makeText(this, robot.getNavigationSafety().getValue(), Toast.LENGTH_LONG).show();
+//        Toast.makeText(this, Integer.toString(robot.checkSelfPermission(Permission.SETTINGS)), Toast.LENGTH_LONG).show();
+//        Toast.makeText(this, Boolean.toString(robot.isSelectedKioskApp()), Toast.LENGTH_LONG).show();
 
     }
 
@@ -98,8 +109,13 @@ public class MainActivity extends AppCompatActivity implements OnRequestPermissi
         B4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                finish();
-                System.exit(0);
+                Log.d("battery",Integer.toString(robot.getBatteryData().component1()));
+
+
+
+//                finish();
+//                System.exit(0);
+
 
             }
         });
@@ -108,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements OnRequestPermissi
             @Override
             public void onClick(View view) {
 
-                robot.speak(goat);
+//                robot.speak(goat);
                 try{
                     // delay 0.8 second
                     Thread.sleep(800);
@@ -130,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements OnRequestPermissi
             @Override
             public void onClick(View view) {
              //   Log.d("test",Integer.toString(robot.getLocations().size()));//2
-                robot.speak(goat);
+
                 robot.goTo("302");
             }
         });
@@ -138,7 +154,7 @@ public class MainActivity extends AppCompatActivity implements OnRequestPermissi
         B3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                robot.speak(goat);
+
 
                 robot.goTo("elevator");
 //                Log.d("batt",Integer.toString((robot.getBatteryData().component1())));
@@ -165,31 +181,102 @@ public class MainActivity extends AppCompatActivity implements OnRequestPermissi
     }
     @Override
     public void onGoToLocationStatusChanged(String s, String s1, int i, String s2) {
+        Log.d("status",s1);
+        String tmp =s;
+        if (s.equals("home base"))
+            tmp = "充電樁";
+        String Tmplocation = "到達"+tmp;
         TtsRequest temp;
         if (s1.equals("complete"))
         {
-            temp = TtsRequest.create("到達目的地",true);
+            temp = TtsRequest.create(Tmplocation,false);
             robot.speak(temp);
+            speak_count = 0;
+            handler.removeCallbacks(runnable);
+        }
+        else if (s1.equals("start"))
+        {
+            Tmplocation = "前往"+tmp;
+            temp = TtsRequest.create(Tmplocation,false);
+            robot.speak(temp);
+            speak_count = 0;
+            handler.removeCallbacks(runnable);
         }
         else if (s1.equals("going"))
         {
-            temp = TtsRequest.create("機器人移動中，請小心",true);
-            robot.speak(temp);
+            robot.speak(TtsRequest.create("機器人移動中，請小心", false));
+            handler.postDelayed(runnable, 6000);
+            speak_count=1;
         }
+        else if (s1.equals("abort"))
+        {
+            handler.removeCallbacks(runnable);
+        }
+//        if (speak_count ==1)
+//        {
+//            handler.postDelayed(runnable, 5000);
+//        }
     }
 
     @Override
     public void onDistanceToLocationChanged(@NotNull Map<String, Float> map) {
-
+//        if (speak_count==0) {
+//            TtsRequest temp = TtsRequest.create("機器人移動中，請小心", false);
+//            robot.speak(temp);
+//        }
+//        else
+//            {
+//                speak_count++;
+//                if(speak_count==300)
+//                    speak_count=0;
+//            }
     }
 
     @Override
     public void onBatteryStatusChanged(@Nullable BatteryData batteryData) {
+        if (robot.getBatteryData().component1()<=15)
+        {
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            builder.setTitle("電池電量將耗盡");
+            builder.setMessage("電池電量剩下15%請盡快充電，電量剩下10%時自動前往充電樁");
+            builder.setIcon(R.drawable.battery);
+
+
+            builder.setPositiveButton("立刻前往充電", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    robot.goTo("home base");
+                }
+            });
+
+            builder.setNegativeButton("稍後再充電", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                }
+            });
+            AlertDialog alert = builder.create();
+            alert.show();
+        }
 //        Log.d("test","change");
-//        if (robot.getBatteryData().component1()<=85) {
-//            robot.goTo("home base");
-//            Log.d("test","change92");
-//        }
+        if (robot.getBatteryData().component1()<=10) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            builder.setTitle("電量剩下10%即將前往充電樁！");
+            builder.setMessage("電量剩下10%即將前往充電樁！");
+            builder.setIcon(R.drawable.battery);
+            builder.setCancelable(true);
+            final AlertDialog dlg = builder.create();
+            dlg.show();
+            final Timer t = new Timer();
+            t.schedule(new TimerTask() {
+                public void run() {
+                    Intent intent1 = new Intent();
+                    intent1.setClass(MainActivity.this, MainActivity.class);
+                    startActivity(intent1);
+                    finish();
+                    dlg.dismiss();
+                    robot.goTo("home base");
+                    t.cancel();
+                }
+            }, 3500);
+        }
     }
 
     @Override
@@ -199,5 +286,10 @@ public class MainActivity extends AppCompatActivity implements OnRequestPermissi
         Log.d("safe-r",robot.getNavigationSafety().getValue());
         robot.setNavigationSafety(SafetyLevel.MEDIUM);
         Log.d("safe2-r",robot.getNavigationSafety().getValue());
+    }
+
+    @Override
+    public void onCurrentPositionChanged(@NotNull Position position) {
+
     }
 }
