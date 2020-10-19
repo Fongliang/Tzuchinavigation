@@ -61,8 +61,6 @@ public class MainActivity extends AppCompatActivity implements OnRequestPermissi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        View appTheme = findViewById(R.id.all_1);
-//        appTheme.getBackground().setAlpha(100);
         ImageView img = findViewById(R.id.Img_bk);
         img.setAlpha(0.7f);
         Button Btmp = findViewById(R.id.b1);
@@ -96,8 +94,6 @@ public class MainActivity extends AppCompatActivity implements OnRequestPermissi
         });
 
 //        Toast.makeText(this, robot.getNavigationSafety().getValue(), Toast.LENGTH_LONG).show();
-//        Toast.makeText(this, Integer.toString(robot.checkSelfPermission(Permission.SETTINGS)), Toast.LENGTH_LONG).show();
-//        Toast.makeText(this, Boolean.toString(robot.isSelectedKioskApp()), Toast.LENGTH_LONG).show();
 
     }
 
@@ -110,9 +106,6 @@ public class MainActivity extends AppCompatActivity implements OnRequestPermissi
             @Override
             public void onClick(View view) {
                 Log.d("battery",Integer.toString(robot.getBatteryData().component1()));
-
-
-
 //                finish();
 //                System.exit(0);
 
@@ -123,19 +116,13 @@ public class MainActivity extends AppCompatActivity implements OnRequestPermissi
         B1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-//                robot.speak(goat);
-                try{
-                    // delay 0.8 second
-                    Thread.sleep(800);
-
-                } catch(InterruptedException e) {
-                    e.printStackTrace();
-                }
-//                test1 = robot.getLocations();
-//                Log.d("test2",test1.toString());
-//                Log.d("test3",test1.get(0).toString());
-//                robot.goTo(test1.get(0).toString());
+//                try{
+//                    // delay 0.8 second
+//                    Thread.sleep(800);
+//
+//                } catch(InterruptedException e) {
+//                    e.printStackTrace();
+//                }
 //               B1.setText("ttt");
                 robot.goTo("home base");
 
@@ -154,7 +141,6 @@ public class MainActivity extends AppCompatActivity implements OnRequestPermissi
         B3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
 
                 robot.goTo("elevator");
 //                Log.d("batt",Integer.toString((robot.getBatteryData().component1())));
@@ -220,21 +206,12 @@ public class MainActivity extends AppCompatActivity implements OnRequestPermissi
 
     @Override
     public void onDistanceToLocationChanged(@NotNull Map<String, Float> map) {
-//        if (speak_count==0) {
-//            TtsRequest temp = TtsRequest.create("機器人移動中，請小心", false);
-//            robot.speak(temp);
-//        }
-//        else
-//            {
-//                speak_count++;
-//                if(speak_count==300)
-//                    speak_count=0;
-//            }
+
     }
 
     @Override
     public void onBatteryStatusChanged(@Nullable BatteryData batteryData) {
-        if (robot.getBatteryData().component1()<=15)
+        if (robot.getBatteryData().component1()<=93)
         {
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             builder.setTitle("電池電量將耗盡");
