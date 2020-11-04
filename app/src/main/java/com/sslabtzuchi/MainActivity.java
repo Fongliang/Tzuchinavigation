@@ -40,7 +40,8 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements OnRequestPermissionResultListener ,OnCurrentPositionChangedListener, OnLocationsUpdatedListener, OnBatteryStatusChangedListener, OnGoToLocationStatusChangedListener, OnDistanceToLocationChangedListener {
     private Button B1,B2,B3,B4;
-//    TtsRequest goat = TtsRequest.create("前往目的地",false);
+    int canceltmp = 0;
+    //    TtsRequest goat = TtsRequest.create("前往目的地",false);
     private Robot robot;
     int speak_count =0;
     private List<String> test1;
@@ -52,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements OnRequestPermissi
             //要做的事情
             TtsRequest temp = TtsRequest.create("機器人移動中，請小心", false);
             robot.speak(temp);
-            handler.postDelayed(this, 6000);
+            handler.postDelayed(this, 5500);
         }
     };
 
@@ -105,7 +106,29 @@ public class MainActivity extends AppCompatActivity implements OnRequestPermissi
         B4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("battery",Integer.toString(robot.getBatteryData().component1()));
+//                Log.d("battery",Integer.toString(robot.getBatteryData().component1()));
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("電量剩下10%即將前往充電樁！");
+                builder.setMessage("電量剩下10%即將前往充電樁！");
+                builder.setIcon(R.drawable.battery);
+                builder.setCancelable(true);
+                final AlertDialog dlg = builder.create();
+                dlg.show();
+                TtsRequest tmp = TtsRequest.create("電量即將耗盡，前往充電樁",false);
+                robot.speak(tmp);
+                final Timer t = new Timer();
+                t.schedule(new TimerTask() {
+                    public void run() {
+                        Intent intent1 = new Intent();
+                        intent1.setClass(MainActivity.this, MainActivity.class);
+                        startActivity(intent1);
+                        finish();
+                        dlg.dismiss();
+                        robot.goTo("home base");
+                        t.cancel();
+                    }
+                }, 3500);
+
 //                finish();
 //                System.exit(0);
 
@@ -191,7 +214,7 @@ public class MainActivity extends AppCompatActivity implements OnRequestPermissi
         else if (s1.equals("going"))
         {
             robot.speak(TtsRequest.create("機器人移動中，請小心", false));
-            handler.postDelayed(runnable, 6000);
+            handler.postDelayed(runnable, 5500);
             speak_count=1;
         }
         else if (s1.equals("abort"))
@@ -211,9 +234,9 @@ public class MainActivity extends AppCompatActivity implements OnRequestPermissi
 
     @Override
     public void onBatteryStatusChanged(@Nullable BatteryData batteryData) {
-        if (robot.getBatteryData().component1()<=93)
+        if (robot.getBatteryData().component1()==15)
         {
-            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             builder.setTitle("電池電量將耗盡");
             builder.setMessage("電池電量剩下15%請盡快充電，電量剩下10%時自動前往充電樁");
             builder.setIcon(R.drawable.battery);
@@ -222,6 +245,8 @@ public class MainActivity extends AppCompatActivity implements OnRequestPermissi
             builder.setPositiveButton("立刻前往充電", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     robot.goTo("home base");
+                    canceltmp = 1;
+
                 }
             });
 
@@ -231,6 +256,11 @@ public class MainActivity extends AppCompatActivity implements OnRequestPermissi
             });
             AlertDialog alert = builder.create();
             alert.show();
+            if (canceltmp ==1)
+            {
+                alert.cancel();
+                canceltmp = 0;
+            }
         }
 //        Log.d("test","change");
         if (robot.getBatteryData().component1()<=10) {
@@ -241,6 +271,8 @@ public class MainActivity extends AppCompatActivity implements OnRequestPermissi
             builder.setCancelable(true);
             final AlertDialog dlg = builder.create();
             dlg.show();
+            TtsRequest tmp = TtsRequest.create("電量即將耗盡，前往充電樁",false);
+            robot.speak(tmp);
             final Timer t = new Timer();
             t.schedule(new TimerTask() {
                 public void run() {
