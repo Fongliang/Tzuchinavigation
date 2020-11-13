@@ -106,28 +106,10 @@ public class MainActivity extends AppCompatActivity implements OnRequestPermissi
         B4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Log.d("battery",Integer.toString(robot.getBatteryData().component1()));
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setTitle("電量剩下10%即將前往充電樁！");
-                builder.setMessage("電量剩下10%即將前往充電樁！");
-                builder.setIcon(R.drawable.battery);
-                builder.setCancelable(true);
-                final AlertDialog dlg = builder.create();
-                dlg.show();
-                TtsRequest tmp = TtsRequest.create("電量即將耗盡，前往充電樁",false);
-                robot.speak(tmp);
-                final Timer t = new Timer();
-                t.schedule(new TimerTask() {
-                    public void run() {
-                        Intent intent1 = new Intent();
-                        intent1.setClass(MainActivity.this, MainActivity.class);
-                        startActivity(intent1);
-                        finish();
-                        dlg.dismiss();
-                        robot.goTo("home base");
-                        t.cancel();
-                    }
-                }, 3500);
+                Log.d("battery",robot.getAllContact().toString());
+                Log.d("battery2",robot.getAdminInfo().toString());
+                robot.startTelepresence("Jhewei","f126c1f2a6cf53b8b8770ab82dbacedc");
+
 
 //                finish();
 //                System.exit(0);
