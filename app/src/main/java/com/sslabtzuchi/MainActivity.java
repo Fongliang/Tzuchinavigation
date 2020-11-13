@@ -1,8 +1,17 @@
 package com.sslabtzuchi;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.FirebaseApp;
+import com.google.mlkit.common.model.DownloadConditions;
+import com.google.mlkit.nl.translate.TranslateLanguage;
+import com.google.mlkit.nl.translate.Translation;
+import com.google.mlkit.nl.translate.Translator;
+import com.google.mlkit.nl.translate.TranslatorOptions;
 import com.robotemi.sdk.BatteryData;
 import com.robotemi.sdk.Robot;
 import com.robotemi.sdk.TtsRequest;
@@ -40,6 +49,7 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements OnRequestPermissionResultListener ,OnCurrentPositionChangedListener, OnLocationsUpdatedListener, OnBatteryStatusChangedListener, OnGoToLocationStatusChangedListener, OnDistanceToLocationChangedListener {
     private Button B1,B2,B3,B4;
+    String langtrans = "";
     int canceltmp = 0;
     //    TtsRequest goat = TtsRequest.create("前往目的地",false);
     private Robot robot;
@@ -62,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements OnRequestPermissi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        FirebaseApp.initializeApp(this);
         ImageView img = findViewById(R.id.Img_bk);
         img.setAlpha(0.7f);
         Button Btmp = findViewById(R.id.b1);
@@ -102,13 +113,43 @@ public class MainActivity extends AppCompatActivity implements OnRequestPermissi
     protected void onResume() {
         super.onResume();
         test1 = robot.getLocations();
+
+        langtrans = "police";
         B4 = (Button) findViewById(R.id.b4);
         B4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("battery",robot.getAllContact().toString());
-                Log.d("battery2",robot.getAdminInfo().toString());
-                robot.startTelepresence("Jhewei","f126c1f2a6cf53b8b8770ab82dbacedc");
+//                Log.d("battery",robot.getAllContact().toString());
+//                Log.d("battery2",robot.getAdminInfo().toString());
+//                robot.startTelepresence("Jhewei","f126c1f2a6cf53b8b8770ab82dbacedc");
+                TranslatorOptions options =
+                        new TranslatorOptions.Builder()
+                                .setSourceLanguage(TranslateLanguage.ENGLISH)
+                                .setTargetLanguage(TranslateLanguage.CHINESE)
+                                .build();
+                final Translator englishGermanTranslator =
+                        Translation.getClient(options);
+                DownloadConditions conditions = new DownloadConditions.Builder()
+                        .requireWifi()
+                        .build();
+                englishGermanTranslator.downloadModelIfNeeded(conditions);
+                englishGermanTranslator.translate(langtrans)
+                        .addOnSuccessListener(
+                                new OnSuccessListener<String>() {
+                                    @Override
+                                    public void onSuccess(@NonNull String translatedText) {
+                                        // Translation successful.
+                                        Log.d("123",translatedText);
+                                    }
+                                })
+                        .addOnFailureListener(
+                                new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        // Error.
+                                        // ...
+                                    }
+                                });
 
 
 //                finish();
