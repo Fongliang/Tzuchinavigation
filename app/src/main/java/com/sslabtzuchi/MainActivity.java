@@ -39,6 +39,7 @@ import android.widget.ImageView;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +47,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import android.widget.Toast;
+
+import taobe.tec.jcc.JChineseConvertor;
 
 public class MainActivity extends AppCompatActivity implements OnRequestPermissionResultListener ,OnCurrentPositionChangedListener, OnLocationsUpdatedListener, OnBatteryStatusChangedListener, OnGoToLocationStatusChangedListener, OnDistanceToLocationChangedListener {
     private Button B1,B2,B3,B4;
@@ -56,6 +59,51 @@ public class MainActivity extends AppCompatActivity implements OnRequestPermissi
     int speak_count =0;
     private List<String> test1;
     Handler handler=new Handler();
+    // translate
+    void stt(String speechtext)
+    {
+        TranslatorOptions options =
+                new TranslatorOptions.Builder()
+                        .setSourceLanguage(TranslateLanguage.ENGLISH)
+                        .setTargetLanguage(TranslateLanguage.CHINESE)
+                        .build();
+        final Translator englishGermanTranslator =
+                Translation.getClient(options);
+        DownloadConditions conditions = new DownloadConditions.Builder()
+                .requireWifi()
+                .build();
+        englishGermanTranslator.downloadModelIfNeeded(conditions);
+        englishGermanTranslator.translate(speechtext)
+                .addOnSuccessListener(
+                        new OnSuccessListener<String>() {
+                            @Override
+                            public void onSuccess(@NonNull String translatedText) {
+                                // Translation successful.
+                                Log.d("stt123",translatedText);
+                                try {
+                                    JChineseConvertor jChineseConvertor = JChineseConvertor
+                                            .getInstance();
+                                    translatedText = jChineseConvertor.s2t(translatedText);
+                                    Log.d("stt456",translatedText);
+
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+
+                            }
+                        })
+                .addOnFailureListener(
+                        new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                // Error.
+                                // ...
+                            }
+                        });
+    }
+    //--
+
+    //guide start repeat alarm
     Runnable runnable=new Runnable() {
         @Override
         public void run() {
@@ -119,37 +167,41 @@ public class MainActivity extends AppCompatActivity implements OnRequestPermissi
         B4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Log.d("battery",robot.getAllContact().toString());
-//                Log.d("battery2",robot.getAdminInfo().toString());
-//                robot.startTelepresence("Jhewei","f126c1f2a6cf53b8b8770ab82dbacedc");
-                TranslatorOptions options =
-                        new TranslatorOptions.Builder()
-                                .setSourceLanguage(TranslateLanguage.ENGLISH)
-                                .setTargetLanguage(TranslateLanguage.CHINESE)
-                                .build();
-                final Translator englishGermanTranslator =
-                        Translation.getClient(options);
-                DownloadConditions conditions = new DownloadConditions.Builder()
-                        .requireWifi()
-                        .build();
-                englishGermanTranslator.downloadModelIfNeeded(conditions);
-                englishGermanTranslator.translate(langtrans)
-                        .addOnSuccessListener(
-                                new OnSuccessListener<String>() {
-                                    @Override
-                                    public void onSuccess(@NonNull String translatedText) {
-                                        // Translation successful.
-                                        Log.d("123",translatedText);
-                                    }
-                                })
-                        .addOnFailureListener(
-                                new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        // Error.
-                                        // ...
-                                    }
-                                });
+                stt("this is a test");
+                // tele---
+//                Log.d("user",robot.getAllContact().toString());
+//                Log.d("admin",robot.getAdminInfo().toString());
+                //robot.startTelepresence("Jin","46a37cc49fdf493b27045b4155c764f6"); //iphone
+//                robot.startTelepresence("嚴","3f7b52cbdcdc3f77ecd0883f68ad097f"); //android
+                //---
+//                TranslatorOptions options =
+//                        new TranslatorOptions.Builder()
+//                                .setSourceLanguage(TranslateLanguage.ENGLISH)
+//                                .setTargetLanguage(TranslateLanguage.CHINESE)
+//                                .build();
+//                final Translator englishGermanTranslator =
+//                        Translation.getClient(options);
+//                DownloadConditions conditions = new DownloadConditions.Builder()
+//                        .requireWifi()
+//                        .build();
+//                englishGermanTranslator.downloadModelIfNeeded(conditions);
+//                englishGermanTranslator.translate(langtrans)
+//                        .addOnSuccessListener(
+//                                new OnSuccessListener<String>() {
+//                                    @Override
+//                                    public void onSuccess(@NonNull String translatedText) {
+//                                        // Translation successful.
+//                                        Log.d("123",translatedText);
+//                                    }
+//                                })
+//                        .addOnFailureListener(
+//                                new OnFailureListener() {
+//                                    @Override
+//                                    public void onFailure(@NonNull Exception e) {
+//                                        // Error.
+//                                        // ...
+//                                    }
+//                                });
 
 
 //                finish();
