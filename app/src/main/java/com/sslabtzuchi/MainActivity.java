@@ -18,6 +18,8 @@ import com.robotemi.sdk.TtsRequest;
 import com.robotemi.sdk.listeners.OnBatteryStatusChangedListener;
 import com.robotemi.sdk.listeners.OnGoToLocationStatusChangedListener;
 import com.robotemi.sdk.listeners.OnLocationsUpdatedListener;
+import com.robotemi.sdk.listeners.OnTelepresenceEventChangedListener;
+import com.robotemi.sdk.model.CallEventModel;
 import com.robotemi.sdk.navigation.listener.OnCurrentPositionChangedListener;
 import com.robotemi.sdk.navigation.listener.OnDistanceToLocationChangedListener;
 import com.robotemi.sdk.navigation.model.Position;
@@ -49,8 +51,7 @@ import java.util.TimerTask;
 import android.widget.Toast;
 
 import taobe.tec.jcc.JChineseConvertor;
-
-public class MainActivity extends AppCompatActivity implements OnRequestPermissionResultListener ,OnCurrentPositionChangedListener, OnLocationsUpdatedListener, OnBatteryStatusChangedListener, OnGoToLocationStatusChangedListener, OnDistanceToLocationChangedListener {
+public class MainActivity extends AppCompatActivity implements OnTelepresenceEventChangedListener,OnRequestPermissionResultListener ,OnCurrentPositionChangedListener, OnLocationsUpdatedListener, OnBatteryStatusChangedListener, OnGoToLocationStatusChangedListener, OnDistanceToLocationChangedListener {
     private Button B1,B2,B3,B4;
     String langtrans = "";
     int canceltmp = 0;
@@ -137,6 +138,7 @@ public class MainActivity extends AppCompatActivity implements OnRequestPermissi
         robot.addOnGoToLocationStatusChangedListener(this);
         robot.addOnBatteryStatusChangedListener(this);
         robot.addOnRequestPermissionResultListener(this);
+        robot.addOnTelepresenceEventChangedListener(this);
 //        robot.requestToBeKioskApp();
 //        Permission setting = Permission.SETTINGS;
 //        List <Permission> Authority = new ArrayList<>();
@@ -167,10 +169,11 @@ public class MainActivity extends AppCompatActivity implements OnRequestPermissi
         B4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                stt("this is a test");
+             //   stt("this is a test"); ---
                 // tele---
 //                Log.d("user",robot.getAllContact().toString());
-//                Log.d("admin",robot.getAdminInfo().toString());
+                Log.d("admin",robot.getAdminInfo().toString());
+                robot.startTelepresence("Jhewei","f126c1f2a6cf53b8b8770ab82dbacedc");
                 //robot.startTelepresence("Jin","46a37cc49fdf493b27045b4155c764f6"); //iphone
 //                robot.startTelepresence("嚴","3f7b52cbdcdc3f77ecd0883f68ad097f"); //android
                 //---
@@ -251,12 +254,18 @@ public class MainActivity extends AppCompatActivity implements OnRequestPermissi
     @Override
     protected void onStop() {
         super.onStop();
+
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
         robot.removeOnLocationsUpdateListener(this);
         robot.removeOnGoToLocationStatusChangedListener(this);
         robot.removeOnDistanceToLocationChangedListener(this);
         robot.removeOnBatteryStatusChangedListener(this);
         robot.removeOnRequestPermissionResultListener(this);
-
     }
 
     @Override
@@ -375,5 +384,15 @@ public class MainActivity extends AppCompatActivity implements OnRequestPermissi
     @Override
     public void onCurrentPositionChanged(@NotNull Position position) {
 
+    }
+
+    @Override
+    public void onTelepresenceEventChanged(@NotNull CallEventModel callEventModel) {
+        Log.d("tele3",Integer.toString(callEventModel.component3()));
+        Log.d("tele1",callEventModel.component1());
+        if (callEventModel.component3()==1)
+        {
+            Log.d("tele3",Integer.toString(callEventModel.component3()));
+        }
     }
 }
