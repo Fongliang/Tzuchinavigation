@@ -36,6 +36,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 
 import org.jetbrains.annotations.NotNull;
@@ -48,20 +49,21 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import android.widget.TextView;
 import android.widget.Toast;
 
 import taobe.tec.jcc.JChineseConvertor;
 public class MainActivity extends AppCompatActivity implements OnTelepresenceEventChangedListener,OnRequestPermissionResultListener ,OnCurrentPositionChangedListener, OnLocationsUpdatedListener, OnBatteryStatusChangedListener, OnGoToLocationStatusChangedListener, OnDistanceToLocationChangedListener {
-    private Button B1,B2,B3,B4;
+    private Button B1,B2,B3,B4,B5;
     String langtrans = "";
     int canceltmp = 0;
-    //    TtsRequest goat = TtsRequest.create("前往目的地",false);
+    // TtsRequest goat = TtsRequest.create("前往目的地",false);
     private Robot robot;
     int speak_count =0;
     private List<String> test1;
     Handler handler=new Handler();
-    // translate
-    void stt(String speechtext)
+    // translate English to Chinese
+    void ENtoZH(String speechtext)
     {
         TranslatorOptions options =
                 new TranslatorOptions.Builder()
@@ -86,6 +88,7 @@ public class MainActivity extends AppCompatActivity implements OnTelepresenceEve
                                             .getInstance();
                                     translatedText = jChineseConvertor.s2t(translatedText);
                                     Log.d("stt456",translatedText);
+                                    robot.speak(TtsRequest.create(translatedText,false));
 
                                 } catch (IOException e) {
                                     e.printStackTrace();
@@ -103,6 +106,38 @@ public class MainActivity extends AppCompatActivity implements OnTelepresenceEve
                         });
     }
     //--
+
+    void ZHtoEN(String speechtext)
+    {
+        TranslatorOptions options =
+                new TranslatorOptions.Builder()
+                        .setSourceLanguage(TranslateLanguage.CHINESE)
+                        .setTargetLanguage(TranslateLanguage.ENGLISH)
+                        .build();
+        final Translator englishGermanTranslator =
+                Translation.getClient(options);
+        DownloadConditions conditions = new DownloadConditions.Builder()
+                .requireWifi()
+                .build();
+        englishGermanTranslator.downloadModelIfNeeded(conditions);
+        englishGermanTranslator.translate(speechtext)
+                .addOnSuccessListener(
+                        new OnSuccessListener<String>() {
+                            @Override
+                            public void onSuccess(@NonNull String translatedText) {
+                                // Translation successful.
+                                Log.d("stt123",translatedText);
+                            }
+                        })
+                .addOnFailureListener(
+                        new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                // Error.
+                                // ...
+                            }
+                        });
+    }
 
     //guide start repeat alarm
     Runnable runnable=new Runnable() {
@@ -163,17 +198,24 @@ public class MainActivity extends AppCompatActivity implements OnTelepresenceEve
     protected void onResume() {
         super.onResume();
         test1 = robot.getLocations();
-
-        langtrans = "police";
+        B5 = (Button) findViewById(R.id.b5);
+        B5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent();
+                intent.setClass(MainActivity.this, Languagetranslate.class);
+                startActivity(intent);
+            }
+        });
         B4 = (Button) findViewById(R.id.b4);
         B4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-             //   stt("this is a test"); ---
                 // tele---
-//                Log.d("user",robot.getAllContact().toString());
+                Log.d("user",robot.getAllContact().toString());
                 Log.d("admin",robot.getAdminInfo().toString());
-                robot.startTelepresence("Jhewei","f126c1f2a6cf53b8b8770ab82dbacedc");
+                //robot.speak(TtsRequest.create(Originaltext,false));
+                //robot.startTelepresence("Jhewei","f126c1f2a6cf53b8b8770ab82dbacedc");
                 //robot.startTelepresence("Jin","46a37cc49fdf493b27045b4155c764f6"); //iphone
 //                robot.startTelepresence("嚴","3f7b52cbdcdc3f77ecd0883f68ad097f"); //android
                 //---

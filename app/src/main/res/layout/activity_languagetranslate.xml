@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Languagetranslate"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
+
+    <ImageView
+        android:id="@+id/Img_bk"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/ttt"
+        android:scaleType="centerCrop" />
+
+    <Button
+        android:id="@+id/tran"
+        android:layout_width="280dp"
+        android:layout_height="80dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="400dp"
+        android:background="@drawable/shape_capsule"
+        android:backgroundTint="@android:color/holo_green_light"
+        android:text="中文翻譯成英文Chinese to English"
+
+        android:textAllCaps="false"
+        android:textColor="#004d8d"
+        android:textSize="30sp" />
+    <Button
+        android:id="@+id/tran2"
+        android:layout_width="280dp"
+        android:layout_height="80dp"
+        android:layout_marginLeft="80dp"
+        android:layout_marginTop="400dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/shape_capsule"
+        android:backgroundTint="@android:color/holo_green_light"
+        android:text="英文翻譯成中文English to Chinese"
+        android:layout_toRightOf="@id/tran"
+        android:textAllCaps="false"
+        android:textColor="#004d8d"
+        android:textSize="30sp" />
+    <Button
+        android:id="@+id/tts"
+        android:layout_width="500px"
+        android:layout_height="100px"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="400dp"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/shape_capsule"
+        android:backgroundTint="@android:color/holo_green_light"
+        android:text="語音撥放 Speak"
+        android:layout_above="@id/LanTranslate1"
+        android:layout_toRightOf="@id/tranlatetext"
+        android:textAllCaps="false"
+        android:textColor="#004d8d"
+        android:textSize="30sp" />
+
+    <Button
+        android:id="@+id/tts2"
+        android:layout_width="500px"
+        android:layout_height="100px"
+        android:layout_above="@id/LanTranslate2"
+        android:layout_below="@id/tran2"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="-1dp"
+        android:layout_toRightOf="@id/tranlatetext2"
+        android:background="@drawable/shape_capsule"
+        android:backgroundTint="@android:color/holo_green_light"
+        android:text="語音撥放 Speak"
+        android:textAllCaps="false"
+        android:textColor="#004d8d"
+        android:textSize="30sp" />
+
+    <Button
+        android:id="@+id/home"
+        android:layout_width="200dp"
+        android:layout_height="80dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/shape_capsule"
+        android:backgroundTint="@android:color/holo_green_light"
+        android:text="Home"
+        android:textAllCaps="false"
+        android:textSize="40sp"
+        android:textColor="#004d8d"
+        android:drawableLeft="@drawable/home"/>
+
+    <TextView
+        android:id="@+id/tranlatetext"
+        android:layout_width="300dp"
+        android:layout_height="60dp"
+        android:layout_below="@id/home"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="85dp"
+        android:paddingTop="10dp"
+        android:textSize="60px"
+        android:textColor="#009688"
+
+        android:text="翻譯 translate" />
+
+    <TextView
+        android:id="@+id/tranlatetext2"
+        android:layout_width="500dp"
+        android:layout_height="60dp"
+        android:layout_below="@id/tran"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="484dp"
+        android:paddingTop="10dp"
+        android:text="翻譯結果 translate result"
+        android:textColor="#009688"
+        android:textSize="60px" />
+
+    <EditText
+        android:id="@+id/LanTranslate1"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_below="@id/tranlatetext"
+        android:layout_marginTop="20dp"
+        android:hint="請輸入要翻譯的文字"
+        android:textSize="30dp"
+        android:inputType="text"
+        android:paddingTop="10dp"
+        android:singleLine="true"
+        android:background="#CCDCDFDF"/>
+    <TextView
+        android:id="@+id/LanTranslate2"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_below="@id/tranlatetext2"
+        android:layout_marginTop="40dp"
+        android:textSize="30dp"
+        android:hint="翻譯結果"
+        android:paddingTop="10dp"
+        android:background="#CCDCDFDF"
+        />
+
+</RelativeLayout>
