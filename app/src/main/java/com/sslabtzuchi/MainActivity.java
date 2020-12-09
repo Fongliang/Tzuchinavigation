@@ -212,8 +212,8 @@ public class MainActivity extends AppCompatActivity implements OnTelepresenceEve
             @Override
             public void onClick(View view) {
                 // tele---
-                Log.d("user",robot.getAllContact().toString());
-                Log.d("admin",robot.getAdminInfo().toString());
+//                Log.d("user",robot.getAllContact().toString());
+//                Log.d("admin",robot.getAdminInfo().toString());
                 //robot.speak(TtsRequest.create(Originaltext,false));
                 //robot.startTelepresence("Jhewei","f126c1f2a6cf53b8b8770ab82dbacedc");
                 //robot.startTelepresence("Jin","46a37cc49fdf493b27045b4155c764f6"); //iphone
@@ -249,8 +249,8 @@ public class MainActivity extends AppCompatActivity implements OnTelepresenceEve
 //                                });
 
 
-//                finish();
-//                System.exit(0);
+                finish();
+                System.exit(0);
 
 
             }

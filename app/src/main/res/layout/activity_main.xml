@@ -45,7 +45,8 @@
         android:textAllCaps="false"
         android:textSize="30sp"
         android:textColor="#004d8d"
-        android:layout_toRightOf="@id/b1" />
+        android:layout_toRightOf="@id/b1"
+        android:drawableLeft="@drawable/zhtoen"/>
     <Button
         android:id="@+id/b2"
         android:layout_width="200dp"
@@ -84,5 +85,6 @@
         android:textAllCaps="false"
         android:textSize="30sp"
         android:textColor="#004d8d"
-        android:layout_below="@id/b3"/>
+        android:layout_below="@id/b3"
+        android:drawableLeft="@drawable/exit"/>
 </RelativeLayout>
