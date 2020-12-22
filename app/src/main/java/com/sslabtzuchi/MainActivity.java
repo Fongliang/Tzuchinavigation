@@ -247,10 +247,9 @@ public class MainActivity extends AppCompatActivity implements OnTelepresenceEve
 //                                        // ...
 //                                    }
 //                                });
-
-
-                finish();
-                System.exit(0);
+                robot.showAppList();
+//                finish();
+//                System.exit(0);
 
 
             }
