@@ -31,6 +31,7 @@ import com.robotemi.sdk.permission.Permission;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -55,6 +56,7 @@ import android.widget.Toast;
 import taobe.tec.jcc.JChineseConvertor;
 public class MainActivity extends AppCompatActivity implements OnTelepresenceEventChangedListener,OnRequestPermissionResultListener ,OnCurrentPositionChangedListener, OnLocationsUpdatedListener, OnBatteryStatusChangedListener, OnGoToLocationStatusChangedListener, OnDistanceToLocationChangedListener {
     private Button B1,B2,B3,B4,B5;
+    private MediaPlayer player;
     String langtrans = "";
     int canceltmp = 0;
     // TtsRequest goat = TtsRequest.create("前往目的地",false);
@@ -247,10 +249,19 @@ public class MainActivity extends AppCompatActivity implements OnTelepresenceEve
 //                                        // ...
 //                                    }
 //                                });
-                robot.showAppList();
-//                finish();
-//                System.exit(0);
+//                robot.showAppList();
+                if(player == null)
+                {
+                    player = new MediaPlayer();
+                }
+                player.reset();
+                try {
+                    player.setDataSource("storage/careful.mp3");
+                    player.prepare();
+                    player.start();
+                } catch (Exception ex) {
 
+                }
 
             }
         });
