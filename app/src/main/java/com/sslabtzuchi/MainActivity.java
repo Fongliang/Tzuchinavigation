@@ -161,8 +161,15 @@ public class MainActivity extends AppCompatActivity implements OnTelepresenceEve
             } catch (Exception ex) {
 
             }
+            try{
+                // delay 0.8 second
+                Thread.sleep(5000);
+                robot.speak(TtsRequest.create("機器人移動中，請小心", false));
+            } catch(InterruptedException e) {
+                e.printStackTrace();
+            }
 
-            handler.postDelayed(this, 5500);
+            handler.postDelayed(this, 7000);
         }
     };
 
@@ -274,7 +281,10 @@ public class MainActivity extends AppCompatActivity implements OnTelepresenceEve
                 //-----
      //           robot.showAppList();
                 //台語
+                if(player == null)
+                {
                     player = new MediaPlayer();
+                }
                 player.reset();
                 try {
                     player.setDataSource("sdcard/careful.mp3");
@@ -383,16 +393,16 @@ public class MainActivity extends AppCompatActivity implements OnTelepresenceEve
             } catch (Exception ex) {
 
             }
-//            try{
-//                    // delay 0.8 second
-//                    Thread.sleep(800);
-//                    robot.speak(TtsRequest.create("機器人移動中，請小心", false));
-//                } catch(InterruptedException e) {
-//                    e.printStackTrace();
-//                }
+            try{
+                    // delay 0.8 second
+                    Thread.sleep(5000);
+                    robot.speak(TtsRequest.create("機器人移動中，請小心", false));
+                } catch(InterruptedException e) {
+                    e.printStackTrace();
+                }
             if (firsttime==0) {
                 firsttime = 1;
-                handler.postDelayed(runnable, 5500);
+                handler.postDelayed(runnable, 7000);
             }
             speak_count=1;
         }
