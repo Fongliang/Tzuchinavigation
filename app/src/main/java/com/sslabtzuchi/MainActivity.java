@@ -56,6 +56,7 @@ import android.widget.Toast;
 import taobe.tec.jcc.JChineseConvertor;
 public class MainActivity extends AppCompatActivity implements OnTelepresenceEventChangedListener,OnRequestPermissionResultListener ,OnCurrentPositionChangedListener, OnLocationsUpdatedListener, OnBatteryStatusChangedListener, OnGoToLocationStatusChangedListener, OnDistanceToLocationChangedListener {
     private Button B1,B2,B3,B4,B5,B6;
+    int sslab = 0,tf= 0;
     private MediaPlayer player;
     String langtrans = "";
     int canceltmp = 0, firsttime =0;
@@ -146,9 +147,6 @@ public class MainActivity extends AppCompatActivity implements OnTelepresenceEve
         @Override
         public void run() {
             // TODO Auto-generated method stub
-            //要做的事情
-//            TtsRequest temp = TtsRequest.create("機器人移動中，請小心", false);
-//            robot.speak(temp);
             if(player == null)
             {
                 player = new MediaPlayer();
@@ -161,15 +159,14 @@ public class MainActivity extends AppCompatActivity implements OnTelepresenceEve
             } catch (Exception ex) {
 
             }
-            try{
-                // delay 0.8 second
-                Thread.sleep(5000);
-                robot.speak(TtsRequest.create("機器人移動中，請小心", false));
-            } catch(InterruptedException e) {
-                e.printStackTrace();
-            }
+//            try{
+//                Thread.sleep(5000);
+//                robot.speak(TtsRequest.create("機器人移動中，請小心", false));
+//            } catch(InterruptedException e) {
+//                e.printStackTrace();
+//            }
 
-            handler.postDelayed(this, 7000);
+            handler.postDelayed(this, 5000);
         }
     };
 
@@ -177,6 +174,8 @@ public class MainActivity extends AppCompatActivity implements OnTelepresenceEve
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sslab = 1;
+        tf = 0;
         setContentView(R.layout.activity_main);
         FirebaseApp.initializeApp(this);
         ImageView img = findViewById(R.id.Img_bk);
@@ -188,6 +187,10 @@ public class MainActivity extends AppCompatActivity implements OnTelepresenceEve
         Btmp = findViewById(R.id.b3);
         Btmp.setAlpha(0.6f);
         Btmp = findViewById(R.id.b4);
+        Btmp.setAlpha(0.6f);
+        Btmp = findViewById(R.id.b5);
+        Btmp.setAlpha(0.6f);
+        Btmp = findViewById(R.id.b6);
         Btmp.setAlpha(0.6f);
         robot = Robot.getInstance();
         robot.addOnLocationsUpdatedListener(this);
@@ -219,6 +222,8 @@ public class MainActivity extends AppCompatActivity implements OnTelepresenceEve
     @Override
     protected void onResume() {
         super.onResume();
+        sslab = 1;
+        tf = 0;
         test1 = robot.getLocations();
         B6 = (Button) findViewById(R.id.b6);
         B6.setOnClickListener(new View.OnClickListener() {
@@ -279,20 +284,21 @@ public class MainActivity extends AppCompatActivity implements OnTelepresenceEve
 //                                    }
 //                                });
                 //-----
-     //           robot.showAppList();
+                robot.showAppList();
+                System.exit(0);
                 //台語
-                if(player == null)
-                {
-                    player = new MediaPlayer();
-                }
-                player.reset();
-                try {
-                    player.setDataSource("sdcard/careful.mp3");
-                    player.prepare();
-                    player.start();
-                } catch (Exception ex) {
-
-                }
+//                if(player == null)
+//                {
+//                    player = new MediaPlayer();
+//                }
+//                player.reset();
+//                try {
+//                    player.setDataSource("sdcard/careful.mp3");
+//                    player.prepare();
+//                    player.start();
+//                } catch (Exception ex) {
+//
+//                }
                 //----
 
             }
@@ -339,11 +345,13 @@ public class MainActivity extends AppCompatActivity implements OnTelepresenceEve
         super.onStop();
 
 
+
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        System.exit(0);
         robot.removeOnLocationsUpdateListener(this);
         robot.removeOnGoToLocationStatusChangedListener(this);
         robot.removeOnDistanceToLocationChangedListener(this);
@@ -358,58 +366,88 @@ public class MainActivity extends AppCompatActivity implements OnTelepresenceEve
     @Override
     public void onGoToLocationStatusChanged(String s, String s1, int i, String s2) {
         Log.d("status",s1);
-        String tmp =s;
-        if (s.equals("home base"))
-            tmp = "充電樁";
-        String Tmplocation = "到達"+tmp;
-        TtsRequest temp;
-        if (s1.equals("complete"))
-        {
-            temp = TtsRequest.create(Tmplocation,false);
-            robot.speak(temp);
-            speak_count = 0;
-            handler.removeCallbacks(runnable);
-        }
-        else if (s1.equals("start"))
-        {
-            Tmplocation = "前往"+tmp;
-            temp = TtsRequest.create(Tmplocation,false);
-            robot.speak(temp);
-            speak_count = 0;
-            handler.removeCallbacks(runnable);
-        }
-        else if (s1.equals("going"))
-        {
-//            robot.speak(TtsRequest.create("機器人移動中，請小心", false));
-            if(player == null)
-            {
-                player = new MediaPlayer();
-            }
-            player.reset();
-            try {
-                player.setDataSource("sdcard/careful.mp3");
-                player.prepare();
-                player.start();
-            } catch (Exception ex) {
+//        String tmp =s;
+////        if (s.equals("home base"))
+////            tmp = "充電樁";
+        if (sslab==1&&tf==0) {
+            TtsRequest temp;
+            if (s1.equals("complete")) {
+                speak_count = 0;
+                firsttime = 0;
+                handler.removeCallbacks(runnable);
+                try {
+                    Thread.sleep(1000);
+                    if (player == null) {
+                        player = new MediaPlayer();
+                    }
+                    player.reset();
+                    try {
+                        player.setDataSource("sdcard/arrive.mp3");
+                        player.prepare();
+                        player.start();
+                    } catch (Exception ex) {
 
-            }
-            try{
-                    // delay 0.8 second
-                    Thread.sleep(5000);
-                    robot.speak(TtsRequest.create("機器人移動中，請小心", false));
-                } catch(InterruptedException e) {
-                    e.printStackTrace();
+                    }
+                } catch (InterruptedException e) {
+
                 }
-            if (firsttime==0) {
-                firsttime = 1;
-                handler.postDelayed(runnable, 7000);
+
+//                try {
+//                    // delay 3.5 second
+//                    Thread.sleep(4500);
+//                    robot.speak(TtsRequest.create("到達目的地", false));
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+            } else if (s1.equals("start")) {
+                speak_count = 0;
+                handler.removeCallbacks(runnable);
+                if (player == null) {
+                    player = new MediaPlayer();
+                }
+                player.reset();
+                try {
+                    player.setDataSource("sdcard/go.mp3");
+                    player.prepare();
+                    player.start();
+                } catch (Exception ex) {
+
+                }
+//                try {
+//                    // delay 3.5 second
+//                    Thread.sleep(3500);
+//                    robot.speak(TtsRequest.create("前往目的地", false));
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+            } else if (s1.equals("going")) {
+//            robot.speak(TtsRequest.create("機器人移動中，請小心", false));
+                if (player == null) {
+                    player = new MediaPlayer();
+                }
+                player.reset();
+                try {
+                    player.setDataSource("sdcard/careful.mp3");
+                    player.prepare();
+                    player.start();
+                } catch (Exception ex) {
+
+                }
+//                try {
+//                    Thread.sleep(5000);
+//                    robot.speak(TtsRequest.create("機器人移動中，請小心", false));
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+                if (firsttime == 0) {
+                    firsttime = 1;
+                    handler.postDelayed(runnable, 4200);
+                }
+                speak_count = 1;
+            } else if (s1.equals("abort")) {
+                firsttime = 0;
+                handler.removeCallbacks(runnable);
             }
-            speak_count=1;
-        }
-        else if (s1.equals("abort"))
-        {
-            firsttime =0 ;
-            handler.removeCallbacks(runnable);
         }
 //        if (speak_count ==1)
 //        {
