@@ -229,7 +229,8 @@ public class MainActivity extends AppCompatActivity implements OnTelepresenceEve
         B6.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Robot.getInstance().startTelepresence("Jhewei","f126c1f2a6cf53b8b8770ab82dbacedc"); //android
+                Robot.getInstance().startTelepresence("Chen","0c8bc1fbacb21115b4492625e035c404"); //android
+                Log.d("user",robot.getAllContact().toString());
             }
         });
         B5 = (Button) findViewById(R.id.b5);
