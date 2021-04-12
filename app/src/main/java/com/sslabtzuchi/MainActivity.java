@@ -325,7 +325,7 @@ public class MainActivity extends AppCompatActivity implements OnTelepresenceEve
             @Override
             public void onClick(View view) {
              //   Log.d("test",Integer.toString(robot.getLocations().size()));//2
-                robot.goTo("302");
+                robot.goTo("入口");
             }
         });
         B3 = (Button) findViewById(R.id.b3);

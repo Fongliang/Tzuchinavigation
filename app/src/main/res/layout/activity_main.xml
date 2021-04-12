@@ -71,7 +71,7 @@
         android:layout_marginLeft="20dp"
         android:background="@drawable/shape_capsule"
         android:backgroundTint="@android:color/holo_green_light"
-        android:text="302"
+        android:text="入口"
         android:textAllCaps="false"
         android:textSize="30sp"
         android:textColor="#004d8d"
